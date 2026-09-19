@@ -30,8 +30,12 @@ export function HomeScreen() {
   );
   const recentlyBought = useMemo(() => {
     const items = persona.lastWeekItemIds.map((id) => productMap[id]).filter(Boolean) as Product[];
-    // inStockOnly:false so an out-of-stock usual can surface its same-size swap here.
-    return rankProducts(items, persona, { inStockOnly: false }).slice(0, 8);
+    // inStockOnly:false so an out-of-stock usual can surface its swap; show it first
+    // as the entry point to the "Made for you" page.
+    const ranked = rankProducts(items, persona, { inStockOnly: false });
+    const oos = ranked.filter((r) => r.product.stockState === 'out');
+    const rest = ranked.filter((r) => r.product.stockState !== 'out');
+    return [...oos, ...rest].slice(0, 8);
   }, [persona]);
   const rankedOffers = useMemo(() => rankOffers(offers, persona).slice(0, 6), [persona]);
 

@@ -70,13 +70,13 @@ export function MadeForYouScreen() {
       )}
 
       <SectionHeader
-        title="Picked for you instead"
+        title="Picked for you"
         emoji="✨"
         social="Loved by shoppers with baskets like yours"
         whyTitle="Made for you"
         whyReasons={['Affinity-led picks, all in stock', 'Turns a dead-end into a personal return page', 'In-stock only guardrail applied']}
       />
-      <ProductGrid items={picks} showRank />
+      <ProductGrid items={picks} />
 
     </div>
   );
