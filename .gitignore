@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Large source data feed — exceeds GitHub's 100MB limit, not used by the app
+public/1789434106487.csv
+
+# TypeScript incremental build cache
+*.tsbuildinfo
