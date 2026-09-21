@@ -196,6 +196,12 @@ export function diversify(ranked: RankedProduct[], count: number, capPerCategory
   return [...picked, ...overflow].slice(0, count);
 }
 
+// The Home "For You" widget: top affinity-ranked, in-stock, diversified across
+// aisles. Shared so other surfaces can exclude what Home already shows.
+export function forYouPicks(persona: Persona, count = 8): RankedProduct[] {
+  return diversify(rankProducts(shoppableProducts, persona, { inStockOnly: true }), count, 2);
+}
+
 // Complements for one or more anchor products: curated pairings take priority,
 // then a category-level fallback fills the rest, both ranked for the shopper.
 function complementsFor(anchorIds: string[], persona: Persona, excludeIds: string[] = []): RankedProduct[] {

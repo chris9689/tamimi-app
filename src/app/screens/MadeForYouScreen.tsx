@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useDemo } from '@/app/DemoContext';
 import { productMap, shoppableProducts } from '@/mock-data/products';
-import { rankProducts, diversify } from '@/services/decisionEngine';
+import { rankProducts, diversify, forYouPicks } from '@/services/decisionEngine';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
@@ -14,12 +14,23 @@ export function MadeForYouScreen() {
   const source = madeForSource ? productMap[madeForSource] : undefined;
   const swap = source?.swapForId ? productMap[source.swapForId] : undefined;
 
+  // Exclude whatever the Home "For You" widget already shows, so this page always
+  // surfaces fresh personal picks rather than repeating the home feed.
+  const homeForYouIds = useMemo(
+    () => new Set(forYouPicks(persona).map((r) => r.product.id)),
+    [persona],
+  );
+
   const picks = useMemo(
     () =>
       diversify(
         rankProducts(
           shoppableProducts.filter(
-            (p) => p.stockState !== 'out' && p.id !== madeForSource && p.id !== source?.swapForId,
+            (p) =>
+              p.stockState !== 'out' &&
+              p.id !== madeForSource &&
+              p.id !== source?.swapForId &&
+              !homeForYouIds.has(p.id),
           ),
           persona,
           { inStockOnly: true },
@@ -27,7 +38,7 @@ export function MadeForYouScreen() {
         8,
         2,
       ),
-    [persona, madeForSource, source],
+    [persona, madeForSource, source, homeForYouIds],
   );
 
   return (

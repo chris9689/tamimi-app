@@ -25,6 +25,14 @@ export function CategoryScreen() {
   const [filter, setFilter] = useState<Filter>('all');
   const cat = categoryMap[categoryId];
 
+  // Order the category selector by this shopper's affinity, matching the Home rail.
+  const orderedCategories = useMemo(() => {
+    const aff = persona.affinity.categoryAffinity;
+    return [...categories].sort(
+      (a, b) => (aff[b.id as CategoryId] ?? 0) - (aff[a.id as CategoryId] ?? 0),
+    );
+  }, [persona]);
+
   const items = useMemo(() => {
     let pool = shoppableProducts.filter((p) => p.category === categoryId);
     if (filter === 'offers') pool = pool.filter((p) => discountPct(p) !== null);
@@ -36,7 +44,7 @@ export function CategoryScreen() {
     <div className="px-4 py-4 pb-8">
       {/* category selector */}
       <div className="hide-h-scroll -mx-4 mb-3 flex gap-2 overflow-x-auto px-4">
-        {categories.map((c) => (
+        {orderedCategories.map((c) => (
           <Chip key={c.id} active={c.id === categoryId} onClick={() => setCategoryId(c.id as CategoryId)}>
             <span>{c.emoji}</span>
             {c.name.split(' ')[0]}

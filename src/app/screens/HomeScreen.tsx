@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import type { CategoryId, Product } from '@/types';
 import { useDemo } from '@/app/DemoContext';
-import { shoppableProducts, productMap } from '@/mock-data/products';
+import { productMap } from '@/mock-data/products';
 import { categoryMap } from '@/mock-data/categories';
 import { offers } from '@/mock-data/offers';
 import { campaignByPersona } from '@/mock-data/campaigns';
-import { rankProducts, rankOffers, diversify } from '@/services/decisionEngine';
+import { rankProducts, rankOffers, forYouPicks } from '@/services/decisionEngine';
 import { cn } from '@/lib/utils';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Icon } from '@/components/ui/Icon';
@@ -24,10 +24,7 @@ export function HomeScreen() {
     [persona],
   );
 
-  const forYou = useMemo(
-    () => diversify(rankProducts(shoppableProducts, persona, { inStockOnly: true }), 8, 2),
-    [persona],
-  );
+  const forYou = useMemo(() => forYouPicks(persona), [persona]);
   const recentlyBought = useMemo(() => {
     const items = persona.lastWeekItemIds.map((id) => productMap[id]).filter(Boolean) as Product[];
     // inStockOnly:false so an out-of-stock usual can surface its swap; show it first
